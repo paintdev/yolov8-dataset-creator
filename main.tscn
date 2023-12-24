@@ -9,5 +9,7 @@ script = ExtResource("1_su2yk")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 show_behind_parent = true
 texture = ExtResource("2_5246i")
+centered = false
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="Sprite2D"]
+anchor_mode = 0
