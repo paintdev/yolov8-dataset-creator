@@ -1,6 +1,6 @@
 extends Node2D
 
-@onready var selecting = $"Uİ/TopLeft"
+@onready var selecting = [$"Uİ/TopLeft",$"Uİ/TopRight"]
 @onready var image = $Sprite2D
 
 var start_point: Vector2
@@ -9,9 +9,11 @@ var actual_end_point: Vector2
 var drawn := true
 var drawn_list := []
 var Class := 0
-var Class_list := ['Tasit','İnsan','UAP','UAİ']
 var object_list := []
 var files: Array
+var index := 0
+var inMenu := true
+var directory
 
 func  _draw() -> void:
 	var image_size = image.texture.get_size()
@@ -24,7 +26,6 @@ func  _draw() -> void:
 		drawn_list.append(actual)
 		for box in drawn_list:
 			draw_rect(box,Color.RED,false)
-		print(drawn_list)
 		var center = Vector2(start_point.x + ((actual_end_point.x - start_point.x) / 2),
 			start_point.y + ((actual_end_point.y-start_point.y) / 2))
 
@@ -38,10 +39,19 @@ func  _draw() -> void:
 
 		draw_circle(center,2.5,Color.WHITE)
 
-	ChangeWindowSize(image_size)
+	#ChangeWindowSize(image_size)
 
 func _input(_event: InputEvent) -> void:
-	#print(get_local_mouse_position())
+
+	if get_local_mouse_position().x < image.texture.get_size().x / 2:
+		$"Uİ/TopRight".visible = true
+		$"Uİ/TopLeft".visible = false
+	else:
+		$"Uİ/TopLeft".visible = true
+		$"Uİ/TopRight".visible = false
+
+	if not $"Uİ/FileDialog".visible and inMenu:
+		$"Uİ/FileDialog".visible = true
 
 	if Input.is_action_just_pressed("left_click"):
 		start_point = get_local_mouse_position()
@@ -51,35 +61,48 @@ func _input(_event: InputEvent) -> void:
 		drawn = true
 		queue_redraw()
 
-
 	end_point = get_local_mouse_position()
+
 	if not drawn:
 		queue_redraw()
 
 	if Input.is_key_pressed(KEY_0):
-		selecting.text = 'Tasit'
+		selecting[0].text = 'Tasit'
+		selecting[1].text = 'Tasit'
 		Class = 0
 	if Input.is_key_pressed(KEY_1):
-		selecting.text = 'İnsan'
+		selecting[0].text = 'İnsan'
+		selecting[1].text = 'İnsan'
 		Class = 1
 	if Input.is_key_pressed(KEY_2):
-		selecting.text = 'UAP'
+		selecting[0].text = 'UAP'
+		selecting[1].text = 'UAP'
 		Class = 2
 	if Input.is_key_pressed(KEY_3):
-		selecting.text = 'UAİ'
+		selecting[0].text = 'UAİ'
+		selecting[1].text = 'UAİ'
 		Class = 3
-
-
+	if Input.is_key_pressed(KEY_N):
+		Nextİmage(directory)
+		ChangeWindowSize(image.texture.get_size())
 
 func _on_file_dialog_dir_selected(dir: String) -> void:
-	files = DirAccess.get_files_at(dir)
-	print(files)
-	var next_image = Image.load_from_file(dir+'/'+files[0])
-	var texture = ImageTexture.create_from_image(next_image)
-	image.texture = texture
-	$"Uİ/FileDialog".visible = false
+	directory = dir
+	inMenu = false
+	Nextİmage(dir)
 	ChangeWindowSize(image.texture.get_size())
 
 func ChangeWindowSize(image_size):
 	get_viewport().size = image_size
 	$"Uİ".size = image_size
+
+
+func Nextİmage(dir):
+	files = DirAccess.get_files_at(dir)
+	if FileAccess.file_exists(dir+'/'+files[index]):
+		var next_image = Image.load_from_file(dir+'/'+files[index])
+		var texture = ImageTexture.create_from_image(next_image)
+		image.texture = texture
+		image.visible = true
+		print(files[index])
+		index += 1
