@@ -1,6 +1,7 @@
 extends Node2D
 
 @onready var selecting = $"Uİ/TopLeft"
+@onready var image = $Sprite2D
 
 var start_point: Vector2
 var end_point: Vector2
@@ -9,9 +10,11 @@ var drawn := true
 var drawn_list := []
 var Class := 0
 var Class_list := ['Tasit','İnsan','UAP','UAİ']
+var object_list := []
+var files: Array
 
 func  _draw() -> void:
-	var picture_size = $Sprite2D.texture.get_size()
+	var image_size = image.texture.get_size()
 	var rectangle = Rect2(start_point,end_point-start_point)
 	draw_rect(rectangle,Color.AQUA,false)
 
@@ -25,18 +28,17 @@ func  _draw() -> void:
 		var center = Vector2(start_point.x + ((actual_end_point.x - start_point.x) / 2),
 			start_point.y + ((actual_end_point.y-start_point.y) / 2))
 
-		var x_center = center.x/picture_size.x
-		var y_center = center.y/picture_size.y
-		var width = (actual_end_point.x - start_point.x) / picture_size.x
-		var height = (actual_end_point.y - start_point.y) / picture_size.y
+		var x_center = center.x/image_size.x
+		var y_center = center.y/image_size.y
+		var width = (actual_end_point.x - start_point.x) / image_size.x
+		var height = (actual_end_point.y - start_point.y) / image_size.y
 
-		prints(Class,x_center,y_center,width,height)
+		object_list.append(' '.join([str(Class),x_center,y_center,width,height]))
+		prints(object_list)
 
 		draw_circle(center,2.5,Color.WHITE)
 
-	var image_size = $Sprite2D.texture.get_size()
-	get_viewport().size = image_size
-	$"Uİ".size = image_size
+	ChangeWindowSize(image_size)
 
 func _input(_event: InputEvent) -> void:
 	#print(get_local_mouse_position())
@@ -67,3 +69,17 @@ func _input(_event: InputEvent) -> void:
 		selecting.text = 'UAİ'
 		Class = 3
 
+
+
+func _on_file_dialog_dir_selected(dir: String) -> void:
+	files = DirAccess.get_files_at(dir)
+	print(files)
+	var next_image = Image.load_from_file(dir+'/'+files[0])
+	var texture = ImageTexture.create_from_image(next_image)
+	image.texture = texture
+	$"Uİ/FileDialog".visible = false
+	ChangeWindowSize(image.texture.get_size())
+
+func ChangeWindowSize(image_size):
+	get_viewport().size = image_size
+	$"Uİ".size = image_size

@@ -1,13 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://1fd7m6vrbbtr"]
+[gd_scene load_steps=7 format=3 uid="uid://1fd7m6vrbbtr"]
 
 [ext_resource type="Script" path="res://draw.gd" id="1_su2yk"]
 [ext_resource type="Texture2D" uid="uid://cn4mftin4nr8s" path="res://car1.jpg" id="2_5246i"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ucfjx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b6obm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0efog"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5uw8u"]
 
 [node name="main" type="Node2D"]
 script = ExtResource("1_su2yk")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 show_behind_parent = true
+z_index = -11
 texture = ExtResource("2_5246i")
 centered = false
 
@@ -24,6 +33,15 @@ offset_bottom = 450.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="FileDialog" type="FileDialog" parent="Uİ"]
+title = "Open a Directory"
+size = Vector2i(635, 400)
+visible = true
+ok_button_text = "Select Current Folder"
+dialog_hide_on_ok = true
+file_mode = 2
+access = 2
+
 [node name="TopLeft" type="Label" parent="Uİ"]
 layout_mode = 0
 offset_left = 19.0
@@ -33,14 +51,10 @@ offset_bottom = 40.0
 theme_override_font_sizes/font_size = 25
 text = "Sec: "
 
-[node name="BottomRight" type="Label" parent="Uİ"]
-layout_mode = 0
-offset_left = 733.0
-offset_top = 400.0
-offset_right = 787.0
-offset_bottom = 435.0
-theme_override_font_sizes/font_size = 25
-text = "Sec: "
+[node name="TopLeftArea" type="Area2D" parent="Uİ/TopLeft"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Uİ/TopLeft/TopLeftArea"]
+shape = SubResource("RectangleShape2D_ucfjx")
 
 [node name="TopRight" type="Label" parent="Uİ"]
 layout_mode = 0
@@ -51,6 +65,12 @@ offset_bottom = 43.0
 theme_override_font_sizes/font_size = 25
 text = "Sec: "
 
+[node name="TopRightArea" type="Area2D" parent="Uİ/TopRight"]
+position = Vector2(-711, -3)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Uİ/TopRight/TopRightArea"]
+shape = SubResource("RectangleShape2D_b6obm")
+
 [node name="BottomLeft" type="Label" parent="Uİ"]
 layout_mode = 0
 offset_left = 23.0
@@ -59,3 +79,26 @@ offset_right = 77.0
 offset_bottom = 436.0
 theme_override_font_sizes/font_size = 25
 text = "Sec: "
+
+[node name="BottomLeftArea" type="Area2D" parent="Uİ/BottomLeft"]
+position = Vector2(-4, -396)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Uİ/BottomLeft/BottomLeftArea"]
+shape = SubResource("RectangleShape2D_0efog")
+
+[node name="BottomRight" type="Label" parent="Uİ"]
+layout_mode = 0
+offset_left = 733.0
+offset_top = 400.0
+offset_right = 787.0
+offset_bottom = 435.0
+theme_override_font_sizes/font_size = 25
+text = "Sec: "
+
+[node name="BottomRightArea" type="Area2D" parent="Uİ/BottomRight"]
+position = Vector2(-714, -395)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Uİ/BottomRight/BottomRightArea"]
+shape = SubResource("RectangleShape2D_5uw8u")
+
+[connection signal="dir_selected" from="Uİ/FileDialog" to="." method="_on_file_dialog_dir_selected"]
