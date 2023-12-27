@@ -30,7 +30,6 @@ size_flags_vertical = 3
 title = "Open a Directory"
 initial_position = 1
 size = Vector2i(635, 400)
-visible = true
 ok_button_text = "Select Current Folder"
 dialog_hide_on_ok = true
 file_mode = 2
@@ -112,5 +111,16 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0.352941, 0.352941, 1)
 metadata/_edit_lock_ = true
+
+[node name="NO MORE" type="Label" parent="Uİ"]
+visible = false
+layout_mode = 0
+offset_left = 34.0
+offset_top = 306.0
+offset_right = 1373.0
+offset_bottom = 443.0
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_font_sizes/font_size = 90
+text = "BAŞKA FOTOĞRAF KALMADI"
 
 [connection signal="dir_selected" from="Uİ/FileDialog" to="." method="_on_file_dialog_dir_selected"]

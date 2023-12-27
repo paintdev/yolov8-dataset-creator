@@ -14,6 +14,7 @@ var files: Array
 var index := 0
 var inMenu := true
 var directory
+var file_name
 
 func  _draw() -> void:
 	var image_size = image.texture.get_size()
@@ -99,10 +100,16 @@ func ChangeWindowSize(image_size):
 
 func Nextİmage(dir):
 	files = DirAccess.get_files_at(dir)
-	if FileAccess.file_exists(dir+'/'+files[index]):
-		var next_image = Image.load_from_file(dir+'/'+files[index])
-		var texture = ImageTexture.create_from_image(next_image)
-		image.texture = texture
-		image.visible = true
-		print(files[index])
-		index += 1
+
+	if index <= (len(files) - 1):
+		if FileAccess.file_exists(dir+'/'+files[index]):
+			file_name = files[index]
+			print(file_name)
+			var next_image = Image.load_from_file(dir+'/'+file_name)
+			var texture = ImageTexture.create_from_image(next_image)
+			image.texture = texture
+			image.visible = true
+			print(files[index])
+			index += 1
+	else:
+		$"Uİ/NO MORE".visible = true
