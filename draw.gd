@@ -16,6 +16,7 @@ var inMenu := true
 var directory
 var file_name
 
+
 func  _draw() -> void:
 	var image_size = image.texture.get_size()
 	var rectangle = Rect2(start_point,end_point-start_point)
@@ -39,8 +40,8 @@ func  _draw() -> void:
 		prints(object_list)
 
 		draw_circle(center,2.5,Color.WHITE)
-
 	#ChangeWindowSize(image_size)
+
 
 func _input(_event: InputEvent) -> void:
 
@@ -67,45 +68,57 @@ func _input(_event: InputEvent) -> void:
 	if not drawn:
 		queue_redraw()
 
-	if Input.is_key_pressed(KEY_0):
+	if Input.is_key_pressed(KEY_1):
 		selecting[0].text = 'Tasit'
 		selecting[1].text = 'Tasit'
 		Class = 0
-	if Input.is_key_pressed(KEY_1):
+	if Input.is_key_pressed(KEY_2):
 		selecting[0].text = 'İnsan'
 		selecting[1].text = 'İnsan'
 		Class = 1
-	if Input.is_key_pressed(KEY_2):
+	if Input.is_key_pressed(KEY_3):
 		selecting[0].text = 'UAP'
 		selecting[1].text = 'UAP'
 		Class = 2
-	if Input.is_key_pressed(KEY_3):
+	if Input.is_key_pressed(KEY_4):
 		selecting[0].text = 'UAİ'
 		selecting[1].text = 'UAİ'
 		Class = 3
 	if Input.is_key_pressed(KEY_N):
-		Nextİmage(directory)
+		Nextİmage()
 		ChangeWindowSize(image.texture.get_size())
+
+	if Input.is_key_pressed(KEY_R):
+		Reset()
 
 func _on_file_dialog_dir_selected(dir: String) -> void:
 	directory = dir
 	inMenu = false
-	Nextİmage(dir)
+	Nextİmage()
 	ChangeWindowSize(image.texture.get_size())
+
 
 func ChangeWindowSize(image_size):
 	get_viewport().size = image_size
 	$"Uİ".size = image_size
 
 
-func Nextİmage(dir):
-	files = DirAccess.get_files_at(dir)
+func Nextİmage():
+	files = DirAccess.get_files_at(directory+"/images/")
+
+	SaveData()
+	drawn_list = []
+	start_point = Vector2.ZERO
+	end_point = Vector2.ZERO
+	actual_end_point = Vector2.ZERO
+	queue_redraw()
 
 	if index <= (len(files) - 1):
-		if FileAccess.file_exists(dir+'/'+files[index]):
+		if FileAccess.file_exists(directory+"/images/"+files[index]):
+			print(directory+"/images/"+files[index])
 			file_name = files[index]
 			print(file_name)
-			var next_image = Image.load_from_file(dir+'/'+file_name)
+			var next_image = Image.load_from_file(directory+"/images/"+file_name)
 			var texture = ImageTexture.create_from_image(next_image)
 			image.texture = texture
 			image.visible = true
@@ -113,3 +126,23 @@ func Nextİmage(dir):
 			index += 1
 	else:
 		$"Uİ/NO MORE".visible = true
+
+func SaveData():
+	var data = ""
+	if index <= (len(files) - 1):
+		if file_name:
+			file_name = files[index].split(".")[0]
+			var file = FileAccess.open(directory+"/labels/"+file_name+".txt",FileAccess.WRITE)
+			for i in object_list:
+				data += (i + "\n")
+			file.store_string(data)
+			object_list = []
+
+func Reset():
+	drawn_list = []
+	object_list = []
+
+	start_point = Vector2.ZERO
+	end_point = Vector2.ZERO
+	actual_end_point = Vector2.ZERO
+	queue_redraw()
